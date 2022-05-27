@@ -9,6 +9,22 @@ then
     exit 1
 fi
 
+# With the -p option set, all hashes will be printed to stdout
+# Build a separate argument list to filter out the options
+while getopts ":p" arg
+do
+    case "$arg" in
+        p)
+            PRINTHASHES=1
+            ;;
+        ?)
+            echo "Invalid option provided: -${OPTARG}"
+            exit 1
+            ;;
+    esac
+done
+shift "$(($OPTIND-1))"
+
 # Check for the presence of arguments
 if [ $# -lt 2 ]
 then
@@ -25,16 +41,31 @@ do
         echo "FFmpeg error. Script failed."
         exit 1
     fi
+    if [ $PRINTHASHES ]
+    then
+        echo "$input": "$hash"
+    fi
 
-    # Compare the hashes
+    # Compare the hashes. If the -p option is not set, terminate early on a hash mismatch
     if [ $first ]
     then
         if [ $first != $hash ]
         then
+            if [ $PRINTHASHES ]
+            then
+                NOTEQUAL=1
+            else
             echo "The files are not equal."
             exit 0
+            fi
         fi
     else
         first=$hash
     fi
 done
+
+# Warn the user of inequal files if the program hasn't terminated earlier.
+if [ $NOTEQUAL ]
+then
+    echo "The files are not equal."
+fi
