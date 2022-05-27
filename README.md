@@ -4,7 +4,7 @@ A shell script that compares whether a given set of audio streams are completely
 ### Usage
 To use this, run audioDiff, with at least two files passed as arguments to the script. The arguments can be video containers as well (e.g. mkv), but only the audio content will be used. The files to be compared must readable by ffmpeg.
 
-It will return text only if there is an error, or the files do not match. If both files match, then no output is returned.
+If there are no errors, the script will return whether or not the file contents match.
 
 Optionally, you can pass "-p" as the first parameter, which will print the hashes for all of the provided files.
 

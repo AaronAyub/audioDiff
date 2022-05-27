@@ -55,8 +55,8 @@ do
             then
                 NOTEQUAL=1
             else
-            echo "The files are not equal."
-            exit 0
+                echo -e "\e[31mThe files are not equal.\e[0m"
+                exit 0
             fi
         fi
     else
@@ -67,5 +67,7 @@ done
 # Warn the user of inequal files if the program hasn't terminated earlier.
 if [ $NOTEQUAL ]
 then
-    echo "The files are not equal."
+    echo -e "\e[31mThe files are not equal.\e[0m"
+else
+    echo -e "\e[32mThe file contents are identical.\e[0m"
 fi
