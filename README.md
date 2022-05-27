@@ -7,3 +7,6 @@ It will return text only if there is an error, or the files do not match. If bot
 
 ### Requirements
 - ffmpeg
+
+### License
+This script is available under the [MIT license](https://github.com/AaronAyub/audioDiff/blob/main/LICENSE).
