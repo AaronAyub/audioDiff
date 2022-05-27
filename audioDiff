@@ -1,0 +1,40 @@
+#!/bin/sh
+# A shell script that compares whether a set of audio files are identical.
+# It takes at least two files that can be processed by ffmpeg as input.
+
+# Check for requirements
+if ! [ -x "$(command -v ffmpeg)" ]
+then
+    echo "This script requires ffmpeg. Please install ffmpeg to use it."
+    exit 1
+fi
+
+# Check for the presence of arguments
+if [ $# -lt 2 ]
+then
+    echo "Please run this script with at least two audio files that you would like to compare."
+    exit 1
+fi
+
+for input in "$@"
+do
+    # Generate the hash of file content
+    hash=$(ffmpeg -nostats -loglevel 0 -i "$input" -y -map 0:a -f hash -)
+    if [ $? -ne 0 ]
+    then
+        echo "FFmpeg error. Script failed."
+        exit 1
+    fi
+
+    # Compare the hashes
+    if [ $first ]
+    then
+        if [ $first != $hash ]
+        then
+            echo "The files are not equal."
+            exit 0
+        fi
+    else
+        first=$hash
+    fi
+done
