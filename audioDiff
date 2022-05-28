@@ -2,18 +2,22 @@
 # A shell script that compares whether a set of audio files are identical.
 # It takes at least two files that can be processed by ffmpeg as input.
 
-# Check for requirements
-if ! [ -x "$(command -v ffmpeg)" ]
-then
-    echo "This script requires ffmpeg. Please install ffmpeg to use it."
-    exit 1
-fi
+# Print the help menu
+help() {
+    echo -e "Checks whether the audio content of a given set of files are identical.\n
+    usage: audioDiff [-h] [-p] {two or more audio or video files}\n
+    -h\tprint this help message
+    -p\tprint the audio hashes of each file"
+    exit 0
+}
 
-# With the -p option set, all hashes will be printed to stdout
-# Build a separate argument list to filter out the options
-while getopts ":p" arg
+# Parse options, then remove them from the arguments array
+while getopts ":hp" arg
 do
     case "$arg" in
+        h)
+            help
+            ;;
         p)
             PRINTHASHES=1
             ;;
@@ -24,6 +28,14 @@ do
     esac
 done
 shift "$(($OPTIND-1))"
+
+# Check for requirements
+if ! [ -x "$(command -v ffmpeg)" ]
+then
+    echo "This script requires ffmpeg. Please install ffmpeg to use it."
+    exit 1
+fi
+
 
 # Check for the presence of arguments
 if [ $# -lt 2 ]
