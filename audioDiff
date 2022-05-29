@@ -5,9 +5,9 @@
 # Print the help menu
 help() {
     echo -e "Checks whether the audio content of a given set of files are identical.\n
-    usage: audioDiff [-h] [-p] {two or more audio or video files}\n
-    -h\tprint this help message
-    -p\tprint the audio hashes of each file"
+usage: audioDiff [-h] [-p] {two or more audio or video files}\n
+-h\tprint this help message
+-p\tprint the audio hashes of each file"
     exit 0
 }
 
@@ -36,11 +36,10 @@ then
     exit 1
 fi
 
-
 # Check for the presence of arguments
 if [ $# -lt 2 ]
 then
-    echo "Please run this script with at least two audio files that you would like to compare."
+    echo "Please run this script with at least two files with audio that you would like to compare."
     exit 1
 fi
 
@@ -53,26 +52,19 @@ do
         echo "FFmpeg error. Script failed."
         exit 1
     fi
-    if [ $PRINTHASHES ]
-    then
-        echo "$input": "$hash"
-    fi
+    [ $PRINTHASHES ] && echo "$input": "$hash"
 
     # Compare the hashes. If the -p option is not set, terminate early on a hash mismatch
-    if [ $first ]
+    [ $first ] || first=$hash
+    if [ $first != $hash ]
     then
-        if [ $first != $hash ]
+        if [ $PRINTHASHES ]
         then
-            if [ $PRINTHASHES ]
-            then
-                NOTEQUAL=1
-            else
-                echo -e "\e[31mThe files are not equal.\e[0m"
-                exit 0
-            fi
+            NOTEQUAL=1
+        else
+            echo -e "\e[31mThe files are not equal.\e[0m"
+            exit 0
         fi
-    else
-        first=$hash
     fi
 done
 
